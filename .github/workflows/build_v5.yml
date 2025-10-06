@@ -5,6 +5,7 @@ on:
     branches:
       - v5-develop
       - v5-main
+      - AI-match
     paths-ignore:
       - "src/Sonarr.Api.*/openapi.json"
   pull_request:
