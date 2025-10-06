@@ -56,6 +56,12 @@ namespace NzbDrone.Core.Configuration
         ListSyncLevelType ListSyncLevel { get; set; }
         int ListSyncTag { get; set; }
 
+        // AI Episode Matching
+        bool AiEpisodeMatchingEnabled { get; set; }
+        string AiEpisodeMatchingProvider { get; set; }
+        string AiEpisodeMatchingApiKey { get; set; }
+        string AiEpisodeMatchingModel { get; set; }
+
         // UI
         int FirstDayOfWeek { get; set; }
         string CalendarWeekColumnHeader { get; set; }
