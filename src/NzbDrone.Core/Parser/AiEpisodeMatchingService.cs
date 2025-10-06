@@ -128,6 +128,7 @@ namespace NzbDrone.Core.Parser
                 {
                     "openai" => CallOpenAiApi(prompt, apiKey, model).GetAwaiter().GetResult(),
                     "anthropic" => CallAnthropicApi(prompt, apiKey, model).GetAwaiter().GetResult(),
+                    "gemini" => CallGeminiApi(prompt, apiKey, model).GetAwaiter().GetResult(),
                     _ => throw new NotSupportedException($"AI provider '{provider}' is not supported")
                 };
 
@@ -228,6 +229,49 @@ namespace NzbDrone.Core.Parser
             var jsonDoc = JsonDocument.Parse(responseBody);
             var messageContent = jsonDoc.RootElement
                 .GetProperty("content")[0]
+                .GetProperty("text")
+                .GetString();
+
+            return messageContent ?? string.Empty;
+        }
+
+        private async Task<string> CallGeminiApi(string prompt, string apiKey, string model)
+        {
+            var requestBody = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new { text = prompt }
+                        }
+                    }
+                },
+                generationConfig = new
+                {
+                    temperature = 0.1,
+                    maxOutputTokens = 500
+                }
+            };
+
+            var json = JsonSerializer.Serialize(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            _httpClient.DefaultRequestHeaders.Clear();
+
+            // Gemini uses API key as query parameter
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}";
+            var response = await _httpClient.PostAsync(url, content);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var jsonDoc = JsonDocument.Parse(responseBody);
+            var messageContent = jsonDoc.RootElement
+                .GetProperty("candidates")[0]
+                .GetProperty("content")
+                .GetProperty("parts")[0]
                 .GetProperty("text")
                 .GetString();
 

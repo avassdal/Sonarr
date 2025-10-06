@@ -20,21 +20,29 @@ AI Episode Matching can be configured in Settings with the following options:
 ### Settings
 
 - **Enable AI Episode Matching** (`AiEpisodeMatchingEnabled`): Toggle to enable/disable the feature (default: `false`)
-- **AI Provider** (`AiEpisodeMatchingProvider`): Choose between `openai` or `anthropic` (default: `openai`)
+- **AI Provider** (`AiEpisodeMatchingProvider`): Choose between `openai`, `anthropic`, or `gemini` (default: `openai`)
 - **API Key** (`AiEpisodeMatchingApiKey`): Your API key for the selected provider (required)
 - **Model** (`AiEpisodeMatchingModel`): The AI model to use (default: `gpt-4o-mini`)
 
 ### Supported Providers
 
 #### OpenAI
+
 - Models: `gpt-4o-mini`, `gpt-4o`, `gpt-4-turbo`, `gpt-3.5-turbo`
-- API Key: Obtain from https://platform.openai.com/api-keys
+- API Key: Obtain from <https://platform.openai.com/api-keys>
 - Cost: Varies by model (gpt-4o-mini is most cost-effective)
 
 #### Anthropic
+
 - Models: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
-- API Key: Obtain from https://console.anthropic.com/
+- API Key: Obtain from <https://console.anthropic.com/>
 - Cost: Varies by model
+
+#### Google Gemini
+
+- Models: `gemini-1.5-flash`, `gemini-1.5-pro`, `gemini-1.0-pro`
+- API Key: Obtain from <https://aistudio.google.com/app/apikey>
+- Cost: Varies by model (gemini-1.5-flash is most cost-effective)
 
 ## Use Cases
 
@@ -92,6 +100,8 @@ Typical costs per AI matching request (approximate):
 - **OpenAI gpt-4o**: $0.001 - $0.005 per request
 - **Anthropic Claude Haiku**: $0.0001 - $0.0005 per request
 - **Anthropic Claude Sonnet**: $0.001 - $0.005 per request
+- **Google Gemini Flash**: $0.00005 - $0.0002 per request (most cost-effective)
+- **Google Gemini Pro**: $0.0005 - $0.002 per request
 
 For most users, costs will be minimal as AI matching only triggers when traditional matching fails.
 
@@ -104,7 +114,7 @@ Potential improvements for future versions:
 3. **Local AI Models**: Support for local LLM models to avoid API costs
 4. **Batch Processing**: Process multiple releases in a single API call
 5. **Learning**: Store successful AI matches to improve traditional regex patterns
-6. **Additional Providers**: Support for more AI providers (Google Gemini, Azure OpenAI, etc.)
+6. **Additional Providers**: Support for more AI providers (Azure OpenAI, etc.)
 
 ## Troubleshooting
 
@@ -119,7 +129,7 @@ Potential improvements for future versions:
 ### High API Costs
 
 1. Review which releases are triggering AI matching in logs
-2. Consider using a more cost-effective model (e.g., gpt-4o-mini)
+2. Consider using a more cost-effective model (e.g., gemini-1.5-flash or gpt-4o-mini)
 3. Improve traditional regex patterns to reduce AI fallback usage
 4. Implement rate limiting or daily cost caps
 
