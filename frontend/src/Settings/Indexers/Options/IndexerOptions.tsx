@@ -22,6 +22,7 @@ import {
   SetChildSave,
 } from 'typings/Settings/SettingsState';
 import translate from 'Utilities/String/translate';
+import AiEpisodeMatching from './AiEpisodeMatching';
 
 const SECTION = 'indexerOptions';
 
@@ -144,6 +145,16 @@ function IndexerOptions({
             />
           </FormGroup>
         </Form>
+      ) : null}
+
+      {hasSettings && isPopulated && !error ? (
+        <AiEpisodeMatching
+          aiEpisodeMatchingEnabled={settings.aiEpisodeMatchingEnabled}
+          aiEpisodeMatchingProvider={settings.aiEpisodeMatchingProvider}
+          aiEpisodeMatchingApiKey={settings.aiEpisodeMatchingApiKey}
+          aiEpisodeMatchingModel={settings.aiEpisodeMatchingModel}
+          onInputChange={handleInputChange}
+        />
       ) : null}
     </FieldSet>
   );

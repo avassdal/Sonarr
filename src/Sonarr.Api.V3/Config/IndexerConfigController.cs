@@ -19,6 +19,19 @@ namespace Sonarr.Api.V3.Config
 
             SharedValidator.RuleFor(c => c.RssSyncInterval)
                            .IsValidRssSyncInterval();
+
+            // AI Episode Matching validation
+            SharedValidator.RuleFor(c => c.AiEpisodeMatchingProvider)
+                           .Must(provider => string.IsNullOrEmpty(provider) || 
+                                           provider == "openai" || 
+                                           provider == "anthropic" || 
+                                           provider == "gemini")
+                           .WithMessage("Provider must be 'openai', 'anthropic', or 'gemini'");
+
+            SharedValidator.RuleFor(c => c.AiEpisodeMatchingApiKey)
+                           .NotEmpty()
+                           .When(c => c.AiEpisodeMatchingEnabled)
+                           .WithMessage("API Key is required when AI Episode Matching is enabled");
         }
 
         protected override IndexerConfigResource ToResource(IConfigService model)
