@@ -21,7 +21,7 @@ on:
         required: true
     secrets:
       SERVICES_API_KEY:
-        required: true
+        required: false
 
 jobs:
   package:
@@ -118,9 +118,17 @@ jobs:
           tag: v${{ inputs.version }}
 
       - name: Publish to Services
+        if: ${{ inputs.branch == 'v5-develop-final' || inputs.branch == 'v5-main-final' }}
+        env:
+          SERVICES_API_KEY: ${{ secrets.SERVICES_API_KEY }}
         shell: bash
         working-directory: _artifacts
         run: |
+          if [ -z "$SERVICES_API_KEY" ]; then
+            echo "SERVICES_API_KEY not set, skipping publish to services"
+            exit 0
+          fi
+
           branch=${{ inputs.branch }}
           version=${{ inputs.version }}
           lastCommit=${{ github.sha }}
@@ -168,4 +176,4 @@ jobs:
           echo "Publishing update $version ($branch) to: $url"
           echo "$json"
 
-          curl -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.SERVICES_API_KEY }}" -X POST -d "$json" --fail-with-body $url
+          curl -H "Content-Type: application/json" -H "X-Api-Key: $SERVICES_API_KEY" -X POST -d "$json" --fail-with-body $url
