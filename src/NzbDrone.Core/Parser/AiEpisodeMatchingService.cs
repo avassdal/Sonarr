@@ -6,9 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using NLog;
-using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Configuration;
-using NzbDrone.Core.Parser.Model;
 using NzbDrone.Core.Tv;
 
 namespace NzbDrone.Core.Parser
@@ -288,14 +286,17 @@ namespace NzbDrone.Core.Parser
                 {
                     cleanResponse = cleanResponse.Substring(7);
                 }
+
                 if (cleanResponse.StartsWith("```"))
                 {
                     cleanResponse = cleanResponse.Substring(3);
                 }
+
                 if (cleanResponse.EndsWith("```"))
                 {
                     cleanResponse = cleanResponse.Substring(0, cleanResponse.Length - 3);
                 }
+
                 cleanResponse = cleanResponse.Trim();
 
                 // Parse the JSON response

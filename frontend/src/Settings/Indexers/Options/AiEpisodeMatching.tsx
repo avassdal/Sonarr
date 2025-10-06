@@ -43,7 +43,10 @@ const modelOptions: Record<string, Array<{ key: string; value: string }>> = {
     { key: 'claude-3-haiku-20240307', value: 'Claude 3 Haiku' },
   ],
   gemini: [
-    { key: 'gemini-1.5-flash', value: 'Gemini 1.5 Flash (Most Cost-Effective)' },
+    {
+      key: 'gemini-1.5-flash',
+      value: 'Gemini 1.5 Flash (Most Cost-Effective)',
+    },
     { key: 'gemini-1.5-pro', value: 'Gemini 1.5 Pro' },
     { key: 'gemini-1.0-pro', value: 'Gemini 1.0 Pro' },
   ],
@@ -58,7 +61,8 @@ function AiEpisodeMatching({
 }: AiEpisodeMatchingProps) {
   const isEnabled = aiEpisodeMatchingEnabled.value;
   const currentProvider = aiEpisodeMatchingProvider.value || 'openai';
-  const currentModelOptions = modelOptions[currentProvider] || modelOptions.openai;
+  const currentModelOptions =
+    modelOptions[currentProvider] || modelOptions.openai;
 
   return (
     <FieldSet legend={translate('AiEpisodeMatching')}>
