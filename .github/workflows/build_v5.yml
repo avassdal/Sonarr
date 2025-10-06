@@ -6,6 +6,7 @@ on:
       - v5-develop
       - v5-main
       - AI-match
+      - AI-match-release
     paths-ignore:
       - "src/Sonarr.Api.*/openapi.json"
   pull_request:
@@ -210,7 +211,7 @@ jobs:
           binary_path: ${{ matrix.binary_path }}
 
   deploy:
-    if: ${{ github.ref_name == 'v5-develop-final' || github.ref_name == 'v5-main-final' }}
+    if: ${{ github.ref_name == 'v5-develop-final' || github.ref_name == 'v5-main-final' || github.ref_name == 'AI-match-release' }}
     needs:
       [
         prepare,
@@ -240,7 +241,7 @@ jobs:
         integration_test,
         deploy,
       ]
-    if: ${{ !cancelled() && (github.ref_name == 'v5-develop-final' || github.ref_name == 'v5-main-final') }}
+    if: ${{ !cancelled() && (github.ref_name == 'v5-develop-final' || github.ref_name == 'v5-main-final' || github.ref_name == 'AI-match-release') }}
     env:
       STATUS: ${{ contains(needs.*.result, 'failure') && 'failure' || 'success' }}
     runs-on: ubuntu-latest
