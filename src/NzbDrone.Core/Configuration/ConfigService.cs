@@ -308,6 +308,30 @@ namespace NzbDrone.Core.Configuration
             set { SetValue("ListSyncTag", value); }
         }
 
+        public bool AiEpisodeMatchingEnabled
+        {
+            get { return GetValueBoolean("AiEpisodeMatchingEnabled", false); }
+            set { SetValue("AiEpisodeMatchingEnabled", value); }
+        }
+
+        public string AiEpisodeMatchingProvider
+        {
+            get { return GetValue("AiEpisodeMatchingProvider", "openai"); }
+            set { SetValue("AiEpisodeMatchingProvider", value); }
+        }
+
+        public string AiEpisodeMatchingApiKey
+        {
+            get { return GetValue("AiEpisodeMatchingApiKey", string.Empty); }
+            set { SetValue("AiEpisodeMatchingApiKey", value); }
+        }
+
+        public string AiEpisodeMatchingModel
+        {
+            get { return GetValue("AiEpisodeMatchingModel", "gpt-4o-mini"); }
+            set { SetValue("AiEpisodeMatchingModel", value); }
+        }
+
         public int FirstDayOfWeek
         {
             get { return GetValueInt("FirstDayOfWeek", (int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek); }

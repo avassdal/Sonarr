@@ -27,16 +27,19 @@ namespace NzbDrone.Core.Parser
         private readonly IEpisodeService _episodeService;
         private readonly ISeriesService _seriesService;
         private readonly ISceneMappingService _sceneMappingService;
+        private readonly IAiEpisodeMatchingService _aiEpisodeMatchingService;
         private readonly Logger _logger;
 
         public ParsingService(IEpisodeService episodeService,
                               ISeriesService seriesService,
                               ISceneMappingService sceneMappingService,
+                              IAiEpisodeMatchingService aiEpisodeMatchingService,
                               Logger logger)
         {
             _episodeService = episodeService;
             _seriesService = seriesService;
             _sceneMappingService = sceneMappingService;
+            _aiEpisodeMatchingService = aiEpisodeMatchingService;
             _logger = logger;
         }
 
@@ -599,6 +602,22 @@ namespace NzbDrone.Core.Parser
                 }
             }
 
+            // If no episodes were found using traditional matching, try AI matching as fallback
+            if (!result.Any() && _aiEpisodeMatchingService.IsEnabled)
+            {
+                _logger.Debug("Traditional anime matching failed, attempting AI-based matching for {0}", parsedEpisodeInfo.ReleaseTitle);
+                var aiMatchedEpisodes = _aiEpisodeMatchingService.MatchEpisodes(
+                    parsedEpisodeInfo.ReleaseTitle,
+                    series,
+                    seasonNumber);
+
+                if (aiMatchedEpisodes.Any())
+                {
+                    _logger.Info("AI matching succeeded where traditional anime matching failed for {0}", parsedEpisodeInfo.ReleaseTitle);
+                    result.AddRange(aiMatchedEpisodes);
+                }
+            }
+
             return result;
         }
 
@@ -660,6 +679,22 @@ namespace NzbDrone.Core.Parser
                 else
                 {
                     _logger.Debug("Unable to find {0}", parsedEpisodeInfo);
+                }
+            }
+
+            // If no episodes were found using traditional matching, try AI matching as fallback
+            if (!result.Any() && _aiEpisodeMatchingService.IsEnabled)
+            {
+                _logger.Debug("Traditional matching failed, attempting AI-based matching for {0}", parsedEpisodeInfo.ReleaseTitle);
+                var aiMatchedEpisodes = _aiEpisodeMatchingService.MatchEpisodes(
+                    parsedEpisodeInfo.ReleaseTitle,
+                    series,
+                    mappedSeasonNumber);
+
+                if (aiMatchedEpisodes.Any())
+                {
+                    _logger.Info("AI matching succeeded where traditional matching failed for {0}", parsedEpisodeInfo.ReleaseTitle);
+                    result.AddRange(aiMatchedEpisodes);
                 }
             }
 
