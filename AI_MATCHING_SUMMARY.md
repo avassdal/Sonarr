@@ -18,7 +18,7 @@ Successfully implemented AI-powered episode matching as a fallback mechanism for
 
 #### AiEpisodeMatchingService Implementation
 - Full implementation of AI matching logic
-- Support for OpenAI and Anthropic providers
+- Support for OpenAI, Anthropic, and Google Gemini providers
 - Intelligent prompt building with series and episode context
 - JSON response parsing with error handling
 - Configurable timeout (30 seconds)
@@ -104,7 +104,7 @@ Return matched episodes to ParsingService
 - Preserves existing behavior for standard releases
 
 ### 2. Provider Abstraction
-- Support for multiple AI providers (OpenAI, Anthropic)
+- Support for multiple AI providers (OpenAI, Anthropic, Google Gemini)
 - Easy to add more providers in the future
 - Provider-specific API handling encapsulated
 
