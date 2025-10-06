@@ -22,9 +22,9 @@ namespace Sonarr.Api.V3.Config
 
             // AI Episode Matching validation
             SharedValidator.RuleFor(c => c.AiEpisodeMatchingProvider)
-                           .Must(provider => string.IsNullOrEmpty(provider) || 
-                                           provider == "openai" || 
-                                           provider == "anthropic" || 
+                           .Must(provider => string.IsNullOrEmpty(provider) ||
+                                           provider == "openai" ||
+                                           provider == "anthropic" ||
                                            provider == "gemini")
                            .WithMessage("Provider must be 'openai', 'anthropic', or 'gemini'");
 

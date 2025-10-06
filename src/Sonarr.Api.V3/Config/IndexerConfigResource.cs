@@ -9,7 +9,7 @@ namespace Sonarr.Api.V3.Config
         public int Retention { get; set; }
         public int MaximumSize { get; set; }
         public int RssSyncInterval { get; set; }
-        
+
         // AI Episode Matching
         public bool AiEpisodeMatchingEnabled { get; set; }
         public string AiEpisodeMatchingProvider { get; set; }
