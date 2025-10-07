@@ -9,6 +9,7 @@ import FormLabel from 'Components/Form/FormLabel';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import { inputTypes, kinds } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
+import AiEpisodeMatching from './AiEpisodeMatching';
 
 function IndexerOptions(props) {
   const {
@@ -99,6 +100,17 @@ function IndexerOptions(props) {
               />
             </FormGroup>
           </Form>
+      }
+
+      {
+        hasSettings && !isFetching && !error &&
+          <AiEpisodeMatching
+            aiEpisodeMatchingEnabled={settings.aiEpisodeMatchingEnabled}
+            aiEpisodeMatchingProvider={settings.aiEpisodeMatchingProvider}
+            aiEpisodeMatchingApiKey={settings.aiEpisodeMatchingApiKey}
+            aiEpisodeMatchingModel={settings.aiEpisodeMatchingModel}
+            onInputChange={onInputChange}
+          />
       }
     </FieldSet>
   );
