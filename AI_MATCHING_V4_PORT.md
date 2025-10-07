@@ -66,10 +66,27 @@ Added localization strings:
 - `EnableAiEpisodeMatching` - "Enable AI Episode Matching"
 - `EnableAiEpisodeMatchingHelpText` - Help text for enabling feature
 
+### 4. Frontend UI (v5 TypeScript → v4 JavaScript)
+
+**File**: `frontend/src/Settings/Indexers/Options/AiEpisodeMatching.js`
+
+Created new JavaScript component (converted from TypeScript):
+- Provider selection dropdown (OpenAI, Anthropic, Google Gemini)
+- API key input (password field)
+- Model selection dropdown (dynamically updates based on provider)
+- Conditional rendering when AI matching is enabled
+
+**File**: `frontend/src/Settings/Indexers/Options/IndexerOptions.js`
+
+Integrated AI Episode Matching component:
+- Imported `AiEpisodeMatching` component
+- Added component after RSS Sync Interval settings
+- Passes all required props from settings
+
 ## What's Different from v5
 
 1. **API Namespace**: Uses `Sonarr.Api.V3` instead of `Sonarr.Api.V5`
-2. **Frontend**: Frontend implementation not yet ported (pending)
+2. **Frontend Language**: JavaScript (v4) instead of TypeScript (v5)
 3. **Build Workflow**: No build workflow changes (v4 uses different CI/CD)
 
 ## Supported AI Providers
@@ -106,13 +123,14 @@ dotnet test src/NzbDrone.Core.Test/ParserTests/AiEpisodeMatchingServiceFixture.c
 
 ## Next Steps
 
-1. **Frontend Implementation**: Port the React/TypeScript UI components from v5
+1. ✅ ~~Frontend Implementation~~ - **COMPLETED**
 2. **Testing**: Comprehensive testing with real-world releases
-3. **Documentation**: Update user-facing documentation
+3. **Build & Deploy**: Build the application and test in a real environment
 
 ## Commits
 
 ```
+d95a96990 - Add frontend UI for AI Episode Matching (v4 compatible)
 1476801c9 - Add AI Episode Matching API support for v4 (Sonarr.Api.V3)
 58b060540 - Add development guide for AI episode matching
 b3a3442a5 - Add Google Gemini AI provider support
@@ -124,5 +142,5 @@ b3a3442a5 - Add Google Gemini AI provider support
 
 - The core AI matching logic is identical to v5
 - API structure adapted to v3 conventions
-- Frontend UI components need to be ported separately (v4 uses different component structure)
-- All backend functionality is complete and ready for testing
+- Frontend converted from TypeScript to JavaScript for v4 compatibility
+- **All functionality (backend + frontend) is complete and ready for testing**
