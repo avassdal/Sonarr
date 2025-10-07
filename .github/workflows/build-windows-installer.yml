@@ -1,0 +1,123 @@
+name: Build Windows x64 Installer
+
+on:
+  push:
+    branches:
+      - ai-matching-v4
+  workflow_dispatch:
+
+env:
+  FRAMEWORK: net6.0
+  SONARR_MAJOR_VERSION: 4
+  VERSION: 4.0.15
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+
+      - name: Setup Environment Variables
+        id: variables
+        shell: bash
+        run: |
+          # Add 800 to the build number + 10000 for custom builds
+          SONARR_VERSION="${{ env.VERSION }}.$((${{ github.run_number }}+10800))"
+          DOTNET_VERSION=$(jq -r '.sdk.version' global.json)
+
+          echo "SDK_PATH=${{ env.DOTNET_ROOT }}/sdk/${DOTNET_VERSION}" >> "$GITHUB_ENV"
+          echo "SONARR_VERSION=$SONARR_VERSION" >> "$GITHUB_ENV"
+          echo "BRANCH=ai-matching-v4" >> "$GITHUB_ENV"
+
+          echo "Building Sonarr v$SONARR_VERSION with AI Episode Matching"
+
+      - name: Enable Extra Platforms In SDK
+        shell: bash
+        run: ./build.sh --enable-extra-platforms-in-sdk
+
+      - name: Build Backend
+        shell: bash
+        run: ./build.sh --backend --enable-extra-platforms --packages
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Volta
+        uses: volta-cli/action@v4
+
+      - name: Install Frontend Dependencies
+        run: yarn install
+
+      - name: Build Frontend
+        run: yarn build --env production
+
+      - name: Create Windows x64 Installer
+        working-directory: distribution/windows/setup
+        shell: cmd
+        run: |
+          SET RUNTIME=win-x64
+          build.bat
+
+      - name: Upload Windows x64 Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sonarr-${{ env.SONARR_VERSION }}-windows-x64-installer
+          path: _artifacts/*win-x64-installer.exe
+          if-no-files-found: error
+
+      - name: Upload Windows x64 Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sonarr-${{ env.SONARR_VERSION }}-windows-x64-archive
+          path: _artifacts/*win-x64.zip
+          if-no-files-found: error
+
+      - name: Create Release (if tagged)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "_artifacts/*win-x64-installer.exe,_artifacts/*win-x64.zip"
+          body: |
+            ## Sonarr v${{ env.SONARR_VERSION }} - AI Episode Matching Edition
+            
+            ### Features
+            - ✅ AI Episode Matching (OpenAI, Anthropic, Google Gemini)
+            - ✅ Automatic fallback when traditional parsing fails
+            - ✅ Support for non-standard release naming (Formula 1, sports, etc.)
+            
+            ### Installation
+            1. Download `Sonarr.${{ env.SONARR_VERSION }}.windows.x64-installer.exe`
+            2. Run the installer
+            3. Configure AI matching in Settings → Indexers → Options
+            
+            ### Configuration
+            - Enable AI Episode Matching
+            - Select provider (OpenAI/Anthropic/Gemini)
+            - Enter your API key
+            - Select model (gpt-4o-mini recommended)
+            
+            Based on Sonarr v4.0.15.2941
+          draft: false
+          prerelease: true
+          name: "Sonarr AI Matching v${{ env.SONARR_VERSION }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Status
+        run: |
+          if [ "${{ needs.build.result }}" == "success" ]; then
+            echo "✅ Windows x64 installer built successfully!"
+          else
+            echo "❌ Build failed!"
+            exit 1
+          fi
